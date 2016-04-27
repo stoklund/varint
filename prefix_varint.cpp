@@ -38,27 +38,18 @@ vector<uint8_t> prefix_encode(const vector<uint64_t> &in) {
   return out;
 }
 
-inline size_t prefix_length(const uint8_t *p) {
-  return 1 + count_trailing_zeros_32(*p | 0x100);
-}
-
-inline uint64_t prefix_get(const uint8_t *p, size_t length) {
-  if (length < 9) {
-    size_t unused = 64 - 8 * length;
-    return unaligned_load_u64(p) << unused >> (unused + length);
-  } else {
-    return unaligned_load_u64(p + 1);
-  }
-}
-
 void prefix_decode(const uint8_t *in, uint64_t *out, size_t count) {
   while (count-- > 0) {
-    if (LIKELY(*in & 1)) {
-      *out++ = *in++ >> 1;
-    } else {
-      size_t length = prefix_length(in);
-      *out++ = prefix_get(in, length);
+    uint64_t v = unaligned_load_u64(in);
+    size_t length = count_trailing_zeros_32(v);
+    if (LIKELY(length < 8)) {
+      uint64_t m = -(uint64_t)256 << (length * 8);
+      length++;
+      *out++ = (v & ~m) >> length;
       in += length;
+    } else {
+      *out++ = unaligned_load_u64(in + 1);
+      in += 9;
     }
   }
 }
