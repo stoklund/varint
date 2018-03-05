@@ -77,7 +77,7 @@ encoding](https://sqlite.org/src4/doc/trunk/www/varint.wiki) is biased towards
 integer distributions with more small numbers. It can encode the integers 0-240
 in one byte.
 
-The encoding implemented here is modified for petter performance with
+The encoding implemented here is modified for better performance with
 WebAssembly (little-endian SQLite). The first byte, `B0` determines the
 encoding:
 
