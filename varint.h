@@ -28,3 +28,4 @@ extern const codec_descriptor leb128_codec;
 extern const codec_descriptor prefix_codec;
 extern const codec_descriptor lesqlite_codec;
 extern const codec_descriptor lesqlite2_codec;
+extern const codec_descriptor u64_codec;
